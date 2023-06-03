@@ -9,27 +9,29 @@ import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
 
 import java.util.Date;
+import java.util.List;
 
 public class LocacaoService {
 
-  public Locacao alugarFilme(Usuario usuario, Filme filme) throws FilmeSemEstoqueException, LocadoraException {
+  public Locacao alugarFilme(Usuario usuario, List<Filme> filmes) throws FilmeSemEstoqueException, LocadoraException {
     if (usuario == null) {
       throw new LocadoraException("Usuario vazio");
     }
 
-    if (filme == null) {
+    if (filmes == null) {
       throw new LocadoraException("Filme vazio");
     }
 
-    if (filme.getEstoque() == 0) {
+    if (Boolean.TRUE.equals(isSemEstoque(filmes))) {
       throw new FilmeSemEstoqueException("Filme sem estoque");
     }
 
     var locacao = new Locacao();
-    locacao.setFilme(filme);
+    locacao.setFilmes(filmes);
     locacao.setUsuario(usuario);
     locacao.setDataLocacao(new Date());
-    locacao.setValor(filme.getPrecoLocacao());
+    locacao.setValor(getPreco(filmes));
+
 
     var dataEntrega = new Date();
     dataEntrega = adicionarDias(dataEntrega, 1);
@@ -39,5 +41,23 @@ public class LocacaoService {
     // TODO adicionar método para salvar
 
     return locacao;
+  }
+
+  private Boolean isSemEstoque(List<Filme> filmes) {
+    for (Filme filme : filmes) {
+      if (filme.getEstoque() == 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private Double getPreco(List<Filme> filmes) {
+    for (Filme filme: filmes) {
+      if (filme != null) {
+        return filme.getPrecoLocacao();
+      }
+    }
+    return null;
   }
 }
