@@ -27,7 +27,7 @@ class LocacaoServiceTest {
   }
 
   @Test
-  void testLocacaoFilme() throws FilmeSemEstoqueException, LocadoraException {
+  void testDeveAlugarFilme() throws FilmeSemEstoqueException, LocadoraException {
     // cenario
     var usuario = new Usuario("Usuario 1");
     var filmes = List.of(new Filme("Filme 1", 2, 5.0));
@@ -44,7 +44,7 @@ class LocacaoServiceTest {
   }
 
   @Test
-  void testLocacaoFilmeSemEstoque() {
+  void testNaoDeveAlugarFilmeSemEstoque() {
     // cenario
     var usuario = new Usuario("Usuario 1");
     var filmes = List.of(new Filme("Filme 1", 0, 5.0));
@@ -59,7 +59,7 @@ class LocacaoServiceTest {
   }
 
   @Test
-  void testLocacaoUsuarioVazio() {
+  void testNaoDeveAlugarFilmeSemUsuario() {
     // cenario
     var filmes = List.of(new Filme("Filme 2", 1, 4.0));
 
@@ -72,7 +72,7 @@ class LocacaoServiceTest {
   }
 
   @Test
-  void testFilmeVazio() {
+  void testNaoDeveAlugarFilmeSemFilme() {
     // cenario
     var usuario = new Usuario("Usuario 1");
 
@@ -82,5 +82,71 @@ class LocacaoServiceTest {
 
     // verificacao
     assertEquals("Filme vazio", locadoraException.getMessage());
+  }
+
+  @Test
+  void testDevePagar75PctNoFilme3() throws FilmeSemEstoqueException, LocadoraException {
+    // cenario
+    var usuario = new Usuario("Usuario 1");
+    var filmes = List.of(new Filme("Filme 1", 2, 4.0),
+            new Filme("Filme 2", 2, 4.0),
+            new Filme("Filme 3", 2, 4.0));
+
+    // acao
+    var resultado = locacaoService.alugarFilme(usuario, filmes);
+
+    // verificacao
+    assertEquals(11, resultado.getValor());
+  }
+
+  @Test
+  void testDevePagar50PctNoFilme4() throws FilmeSemEstoqueException, LocadoraException {
+    // cenario
+    var usuario = new Usuario("Usuario 1");
+    var filmes = List.of(new Filme("Filme 1", 2, 4.0),
+            new Filme("Filme 2", 2, 4.0),
+            new Filme("Filme 3", 2, 4.0),
+            new Filme("Filme 4", 2, 4.0));
+
+    // acao
+    var resultado = locacaoService.alugarFilme(usuario, filmes);
+
+    // verificacao
+    assertEquals(13, resultado.getValor());
+  }
+
+  @Test
+  void testDevePagar75PctNoFilme5() throws FilmeSemEstoqueException, LocadoraException {
+    // cenario
+    var usuario = new Usuario("Usuario 1");
+    var filmes = List.of(new Filme("Filme 1", 2, 4.0),
+            new Filme("Filme 2", 2, 4.0),
+            new Filme("Filme 3", 2, 4.0),
+            new Filme("Filme 4", 2, 4.0),
+            new Filme("Filme 5", 2, 4.0));
+
+    // acao
+    var resultado = locacaoService.alugarFilme(usuario, filmes);
+
+    // verificacao
+    assertEquals(14, resultado.getValor());
+  }
+
+  @Test
+  void testDevePagar0PctNoFilme6() throws FilmeSemEstoqueException, LocadoraException {
+    // cenario
+    var usuario = new Usuario("Usuario 1");
+    var filmes = List.of(new Filme("Filme 1", 2, 4.0),
+            new Filme("Filme 2", 2, 4.0),
+            new Filme("Filme 3", 2, 4.0),
+            new Filme("Filme 4", 2, 4.0),
+            new Filme("Filme 5", 2, 4.0),
+            new Filme("Filme 6", 2, 4.0));
+
+    // acao
+    var resultado = locacaoService.alugarFilme(usuario, filmes);
+
+    // verificacao
+    assertEquals(14, resultado.getValor());
   }
 }

@@ -30,8 +30,29 @@ public class LocacaoService {
     locacao.setFilmes(filmes);
     locacao.setUsuario(usuario);
     locacao.setDataLocacao(new Date());
-    locacao.setValor(getPreco(filmes));
+    Double valorTotal = 0d;
 
+    for (int i = 0; i < filmes.size(); i++) {
+      var filme = filmes.get(i);
+      Double valorFilme = filme.getPrecoLocacao();
+      switch (i) {
+        case 2:
+          valorFilme = valorFilme * 0.75;
+          break;
+        case 3:
+          valorFilme = valorFilme * 0.50;
+          break;
+        case 4:
+          valorFilme = valorFilme * 0.25;
+          break;
+        case 5:
+          valorFilme = 0d;
+          break;
+      }
+      valorTotal += valorFilme;
+    }
+
+    locacao.setValor(valorTotal);
 
     var dataEntrega = new Date();
     dataEntrega = adicionarDias(dataEntrega, 1);
@@ -43,6 +64,10 @@ public class LocacaoService {
     return locacao;
   }
 
+
+
+
+
   private Boolean isSemEstoque(List<Filme> filmes) {
     for (Filme filme : filmes) {
       if (filme.getEstoque() == 0) {
@@ -52,12 +77,4 @@ public class LocacaoService {
     return false;
   }
 
-  private Double getPreco(List<Filme> filmes) {
-    for (Filme filme: filmes) {
-      if (filme != null) {
-        return filme.getPrecoLocacao();
-      }
-    }
-    return null;
-  }
 }
