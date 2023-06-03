@@ -12,19 +12,26 @@ import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
 import br.ce.wcaquino.utils.DataUtils;
 import java.util.Date;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class LocacaoServiceTest {
 
+  private LocacaoService locacaoService;
+
+  @BeforeEach
+  void setUp() {
+    locacaoService = new LocacaoService();
+  }
+
   @Test
   void testLocacaoFilme() throws FilmeSemEstoqueException, LocadoraException {
     // cenario
-    var service = new LocacaoService();
     var usuario = new Usuario("Usuario 1");
     var filme = new Filme("Filme 1", 2, 5.0);
 
     // acao
-    var locacao = service.alugarFilme(usuario, filme);
+    var locacao = locacaoService.alugarFilme(usuario, filme);
 
     // verificacao
     assertThat(locacao.getValor(), is(5.0));
@@ -37,13 +44,13 @@ class LocacaoServiceTest {
   @Test
   void testLocacaoFilmeSemEstoque() {
     // cenario
-    var service = new LocacaoService();
     var usuario = new Usuario("Usuario 1");
     var filme = new Filme("Filme 1", 0, 5.0);
 
     // acao
     var exception =
-        assertThrows(FilmeSemEstoqueException.class, () -> service.alugarFilme(usuario, filme));
+        assertThrows(
+            FilmeSemEstoqueException.class, () -> locacaoService.alugarFilme(usuario, filme));
 
     // verificacao
     assertEquals("Filme sem estoque", exception.getMessage());
@@ -52,7 +59,6 @@ class LocacaoServiceTest {
   @Test
   void testLocacaoUsuarioVazio() {
     // cenario
-    var locacaoService = new LocacaoService();
     var filme = new Filme("Filme 2", 1, 4.0);
 
     // acao
@@ -60,19 +66,19 @@ class LocacaoServiceTest {
         assertThrows(LocadoraException.class, () -> locacaoService.alugarFilme(null, filme));
 
     // verificacao
-    assertEquals(locadoraException.getMessage(), "Usuario vazio");
+    assertEquals("Usuario vazio", locadoraException.getMessage());
   }
 
   @Test
   void testFilmeVazio() {
     // cenario
-    var locacaoService = new LocacaoService();
     var usuario = new Usuario("Usuario 1");
 
     // acao
-    var locadoraException = assertThrows(LocadoraException.class, () -> locacaoService.alugarFilme(usuario, null));
+    var locadoraException =
+        assertThrows(LocadoraException.class, () -> locacaoService.alugarFilme(usuario, null));
 
     // verificacao
-    assertEquals(locadoraException.getMessage(), "Filme vazio");
+    assertEquals("Filme vazio", locadoraException.getMessage());
   }
 }
