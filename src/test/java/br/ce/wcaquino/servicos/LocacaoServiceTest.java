@@ -5,15 +5,18 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Usuario;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
 import br.ce.wcaquino.utils.DataUtils;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +31,8 @@ class LocacaoServiceTest {
 
   @Test
   void testDeveAlugarFilme() throws FilmeSemEstoqueException, LocadoraException {
+    assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+
     // cenario
     var usuario = new Usuario("Usuario 1");
     var filmes = List.of(new Filme("Filme 1", 2, 5.0));
@@ -88,7 +93,9 @@ class LocacaoServiceTest {
   void testDevePagar75PctNoFilme3() throws FilmeSemEstoqueException, LocadoraException {
     // cenario
     var usuario = new Usuario("Usuario 1");
-    var filmes = List.of(new Filme("Filme 1", 2, 4.0),
+    var filmes =
+        List.of(
+            new Filme("Filme 1", 2, 4.0),
             new Filme("Filme 2", 2, 4.0),
             new Filme("Filme 3", 2, 4.0));
 
@@ -103,7 +110,9 @@ class LocacaoServiceTest {
   void testDevePagar50PctNoFilme4() throws FilmeSemEstoqueException, LocadoraException {
     // cenario
     var usuario = new Usuario("Usuario 1");
-    var filmes = List.of(new Filme("Filme 1", 2, 4.0),
+    var filmes =
+        List.of(
+            new Filme("Filme 1", 2, 4.0),
             new Filme("Filme 2", 2, 4.0),
             new Filme("Filme 3", 2, 4.0),
             new Filme("Filme 4", 2, 4.0));
@@ -119,7 +128,9 @@ class LocacaoServiceTest {
   void testDevePagar75PctNoFilme5() throws FilmeSemEstoqueException, LocadoraException {
     // cenario
     var usuario = new Usuario("Usuario 1");
-    var filmes = List.of(new Filme("Filme 1", 2, 4.0),
+    var filmes =
+        List.of(
+            new Filme("Filme 1", 2, 4.0),
             new Filme("Filme 2", 2, 4.0),
             new Filme("Filme 3", 2, 4.0),
             new Filme("Filme 4", 2, 4.0),
@@ -136,7 +147,9 @@ class LocacaoServiceTest {
   void testDevePagar0PctNoFilme6() throws FilmeSemEstoqueException, LocadoraException {
     // cenario
     var usuario = new Usuario("Usuario 1");
-    var filmes = List.of(new Filme("Filme 1", 2, 4.0),
+    var filmes =
+        List.of(
+            new Filme("Filme 1", 2, 4.0),
             new Filme("Filme 2", 2, 4.0),
             new Filme("Filme 3", 2, 4.0),
             new Filme("Filme 4", 2, 4.0),
@@ -148,5 +161,22 @@ class LocacaoServiceTest {
 
     // verificacao
     assertEquals(14, resultado.getValor());
+  }
+
+  @Test
+  void testDeveDevolverFilmeNaSegundaAoAlugarNoSabado() throws FilmeSemEstoqueException, LocadoraException {
+    
+    assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+
+    // cenario
+    var usuario = new Usuario("Usuario 1");
+    var filmes = List.of(new Filme("Filme 1", 1, 5.0));
+
+    // acao
+    var resultado = locacaoService.alugarFilme(usuario, filmes);
+
+    // verificacao
+    var ehSegunda = DataUtils.verificarDiaSemana(resultado.getDataRetorno(), Calendar.MONDAY);
+    assertTrue(ehSegunda);
   }
 }

@@ -7,7 +7,8 @@ import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
-
+import br.ce.wcaquino.utils.DataUtils;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -30,11 +31,11 @@ public class LocacaoService {
     locacao.setFilmes(filmes);
     locacao.setUsuario(usuario);
     locacao.setDataLocacao(new Date());
-    Double valorTotal = 0d;
 
+    var valorTotal = 0d;
     for (int i = 0; i < filmes.size(); i++) {
       var filme = filmes.get(i);
-      Double valorFilme = filme.getPrecoLocacao();
+      var valorFilme = filme.getPrecoLocacao();
       switch (i) {
         case 2:
           valorFilme = valorFilme * 0.75;
@@ -56,6 +57,11 @@ public class LocacaoService {
 
     var dataEntrega = new Date();
     dataEntrega = adicionarDias(dataEntrega, 1);
+
+    if (DataUtils.verificarDiaSemana(dataEntrega, Calendar.SUNDAY)) {
+      dataEntrega = adicionarDias(dataEntrega, 1);
+    }
+
     locacao.setDataRetorno(dataEntrega);
 
     // Salvando a locacao...
@@ -63,10 +69,6 @@ public class LocacaoService {
 
     return locacao;
   }
-
-
-
-
 
   private Boolean isSemEstoque(List<Filme> filmes) {
     for (Filme filme : filmes) {
@@ -76,5 +78,4 @@ public class LocacaoService {
     }
     return false;
   }
-
 }
