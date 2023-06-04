@@ -4,6 +4,8 @@ import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import br.ce.wcaquino.builders.FilmeBuilder;
+import br.ce.wcaquino.daos.LocacaoDAO;
+import br.ce.wcaquino.daos.LocacaoDAOFake;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
@@ -47,6 +49,8 @@ public class CalculoValorLocacaoTest {
   @Before
   public void init() {
     service = new LocacaoService();
+    LocacaoDAO dao = new LocacaoDAOFake();
+    service.setLocacaoDAO(dao);
   }
 
   @Parameterized.Parameters(name="{2}")
