@@ -4,20 +4,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import br.ce.wcaquino.exceptions.NaoPodeDividirPorZeroException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-class CalculadoraTest {
+public class CalculadoraTest {
 
   private Calculadora calculadora;
 
-  @BeforeEach
-  void init() {
+  @Before
+  public void init() {
     calculadora = new Calculadora();
   }
 
   @Test
-  void testSomaValores() {
+  public void testSomaValores() {
     // cenario
     var a = 5;
     var b = 3;
@@ -30,7 +30,7 @@ class CalculadoraTest {
   }
 
   @Test
-  void testSubtraiValores() {
+  public void testSubtraiValores() {
     // cenario
     var a = 5;
     var b = 3;
@@ -43,7 +43,7 @@ class CalculadoraTest {
   }
 
   @Test
-  void testDivideValores() throws NaoPodeDividirPorZeroException {
+  public void testDivideValores() throws NaoPodeDividirPorZeroException {
     // cenario
     var a = 10;
     var b = 5;
@@ -56,7 +56,7 @@ class CalculadoraTest {
   }
 
   @Test
-  void testExcecaoAoDividirPorZero() {
+  public void testExcecaoAoDividirPorZero() {
     // cenario
     var a = 10;
     var b = 0;
