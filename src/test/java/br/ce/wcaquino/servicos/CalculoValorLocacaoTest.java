@@ -2,7 +2,7 @@ package br.ce.wcaquino.servicos;
 
 import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import br.ce.wcaquino.builders.FilmeBuilder;
 import br.ce.wcaquino.daos.LocacaoDAO;
@@ -17,11 +17,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 @RunWith(Parameterized.class)
 public class CalculoValorLocacaoTest {
 
-  private LocacaoService service;
+  @InjectMocks private LocacaoService service;
+  @Mock
+  private LocacaoDAO dao;
+  @Mock private SPCService spcService;
+  @Mock private EmailService emailService;
 
   @Parameter
   public List<Filme> filmes;
@@ -42,10 +48,7 @@ public class CalculoValorLocacaoTest {
 
   @Before
   public void setup(){
-    LocacaoDAO dao = mock(LocacaoDAO.class);
-    SPCService spcService = mock(SPCService.class);
-    EmailService emailService = mock(EmailService.class);
-    service = new LocacaoService(dao, spcService, emailService);
+    initMocks(this);
   }
 
   @Parameterized.Parameters(name="{2}")

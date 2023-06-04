@@ -13,6 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import br.ce.wcaquino.daos.LocacaoDAO;
 import br.ce.wcaquino.entidades.Usuario;
@@ -25,20 +26,19 @@ import java.util.List;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 public class LocacaoServiceTest {
 
-  private LocacaoService service;
-  private LocacaoDAO dao;
-  private SPCService spcService;
-  private EmailService emailService;
+  @InjectMocks private LocacaoService service;
+  @Mock private LocacaoDAO dao;
+  @Mock private SPCService spcService;
+  @Mock private EmailService emailService;
 
   @Before
   public void setup() {
-    dao = mock(LocacaoDAO.class);
-    spcService = mock(SPCService.class);
-    emailService = mock(EmailService.class);
-    service = new LocacaoService(dao, spcService, emailService);
+    initMocks(this);
   }
 
   @Test

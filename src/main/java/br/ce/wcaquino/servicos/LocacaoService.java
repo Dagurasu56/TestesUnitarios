@@ -15,15 +15,9 @@ import java.util.List;
 
 public class LocacaoService {
 
-  private final LocacaoDAO dao;
-  private final SPCService spcService;
-  private final EmailService emailService;
-
-  public LocacaoService(LocacaoDAO dao, SPCService spcService, EmailService emailService) {
-    this.dao = dao;
-    this.spcService = spcService;
-    this.emailService = emailService;
-  }
+  private LocacaoDAO dao;
+  private SPCService spcService;
+  private EmailService emailService;
 
   public Locacao alugarFilme(Usuario usuario, List<Filme> filmes)
       throws FilmeSemEstoqueException, LocadoraException {
