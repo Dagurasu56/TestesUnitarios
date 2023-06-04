@@ -11,9 +11,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 import br.ce.wcaquino.daos.LocacaoDAO;
-import br.ce.wcaquino.daos.LocacaoDAOFake;
 import br.ce.wcaquino.entidades.Usuario;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
@@ -32,7 +32,7 @@ public class LocacaoServiceTest {
   @Before
   public void setUp() {
     locacaoService = new LocacaoService();
-    LocacaoDAO dao = new LocacaoDAOFake();
+    LocacaoDAO dao = mock(LocacaoDAO.class);
     locacaoService.setLocacaoDAO(dao);
   }
 

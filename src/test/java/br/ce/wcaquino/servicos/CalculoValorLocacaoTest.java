@@ -2,6 +2,7 @@ package br.ce.wcaquino.servicos;
 
 import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import br.ce.wcaquino.builders.FilmeBuilder;
 import br.ce.wcaquino.daos.LocacaoDAO;
@@ -35,6 +36,8 @@ public class CalculoValorLocacaoTest {
   @Before
   public void setup(){
     service = new LocacaoService();
+    LocacaoDAO dao = mock(LocacaoDAO.class);
+    service.setLocacaoDAO(dao);
   }
 
 
