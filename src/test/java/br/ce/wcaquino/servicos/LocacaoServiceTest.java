@@ -16,6 +16,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import br.ce.wcaquino.daos.LocacaoDAO;
+import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
@@ -26,6 +27,7 @@ import java.util.List;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -235,9 +237,26 @@ public class LocacaoServiceTest {
     when(spcService.possuiNegativacao(usuario)).thenThrow(new Exception("Falha catastrófica"));
 
     // acao
-    var exception = assertThrows(LocadoraException.class, () -> service.alugarFilme(usuario, filmes));
+    var exception =
+        assertThrows(LocadoraException.class, () -> service.alugarFilme(usuario, filmes));
 
     // verificacao
     assertEquals("Problemas com o SPC, tente novamente", exception.getMessage());
+  }
+
+  @Test
+  public void deveProrrogarUmaLocacao() {
+    // cenario
+    var locacao = umLocacao().agora();
+
+    // acao
+    service.prorrogarLocacao(locacao, 3);
+
+    // verificacao
+    var argumentCaptor = ArgumentCaptor.forClass(Locacao.class);
+    verify(dao).salvar(argumentCaptor.capture());
+    var locacaoRetornada = argumentCaptor.getValue();
+
+    assertEquals(12.0, locacaoRetornada.getValor());
   }
 }

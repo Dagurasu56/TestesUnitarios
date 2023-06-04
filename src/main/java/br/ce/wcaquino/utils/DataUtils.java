@@ -13,7 +13,7 @@ public class DataUtils {
   private DataUtils() {}
 
   public static Date adicionarDias(Date data, int dias) {
-    Calendar calendar = Calendar.getInstance();
+    var calendar = Calendar.getInstance();
     calendar.setTime(data);
     calendar.add(DAY_OF_MONTH, dias);
     return calendar.getTime();
@@ -24,7 +24,7 @@ public class DataUtils {
   }
 
   public static Date obterData(int dia, int mes, int ano) {
-    Calendar calendar = Calendar.getInstance();
+    var calendar = Calendar.getInstance();
     calendar.set(DAY_OF_MONTH, dia);
     calendar.set(MONTH, mes - 1);
     calendar.set(YEAR, ano);

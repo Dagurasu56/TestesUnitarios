@@ -96,11 +96,21 @@ public class LocacaoService {
   }
 
   public void notificarAtraso() {
-    List<Locacao> locacoes = dao.obterLocacoesPendentes();
+    var locacoes = dao.obterLocacoesPendentes();
     for (Locacao locacao : locacoes) {
       if (locacao.getDataRetorno().before(new Date())) {
         emailService.notificarAtraso(locacao.getUsuario());
       }
     }
+  }
+
+  public void prorrogarLocacao(Locacao locacao, int dias) {
+    var novaLocacao = new Locacao();
+    novaLocacao.setUsuario(locacao.getUsuario());
+    novaLocacao.setFilmes(locacao.getFilmes());
+    novaLocacao.setDataLocacao(locacao.getDataLocacao());
+    novaLocacao.setDataRetorno(locacao.getDataRetorno());
+    novaLocacao.setValor(locacao.getValor() * dias);
+    dao.salvar(novaLocacao);
   }
 }

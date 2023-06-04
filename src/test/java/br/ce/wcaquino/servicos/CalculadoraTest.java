@@ -23,7 +23,7 @@ public class CalculadoraTest {
     var b = 3;
 
     // acao
-    var resultado = calculadora.soma(a, b);
+    var resultado = calculadora.somar(a, b);
 
     // verificacao
     assertEquals(8, resultado);
