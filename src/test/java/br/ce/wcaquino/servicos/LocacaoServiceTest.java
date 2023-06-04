@@ -1,5 +1,8 @@
 package br.ce.wcaquino.servicos;
 
+import static br.ce.wcaquino.builders.FilmeBuilder.umFilme;
+import static br.ce.wcaquino.builders.FilmeBuilder.umFilmeSemEstoque;
+import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static br.ce.wcaquino.matchers.MatchersProprio.caiEm;
 import static br.ce.wcaquino.matchers.MatchersProprio.caiNumaSegunda;
 import static br.ce.wcaquino.matchers.MatchersProprio.ehHoje;
@@ -9,7 +12,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Usuario;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
@@ -35,8 +37,8 @@ public class LocacaoServiceTest {
     Assume.assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
     // cenario
-    var usuario = new Usuario("Usuario 1");
-    var filmes = List.of(new Filme("Filme 1", 2, 5.0));
+    var usuario = umUsuario().agora();
+    var filmes = List.of(umFilme().comValor(5.0).agora());
 
     // acao
     var resultado = locacaoService.alugarFilme(usuario, filmes);
@@ -50,8 +52,8 @@ public class LocacaoServiceTest {
   @Test
   public void testNaoDeveAlugarFilmeSemEstoque() {
     // cenario
-    var usuario = new Usuario("Usuario 1");
-    var filmes = List.of(new Filme("Filme 1", 0, 5.0));
+    var usuario = umUsuario().agora();
+    var filmes = List.of(umFilmeSemEstoque().agora());
 
     // acao
     var exception =
@@ -65,7 +67,7 @@ public class LocacaoServiceTest {
   @Test
   public void testNaoDeveAlugarFilmeSemUsuario() {
     // cenario
-    var filmes = List.of(new Filme("Filme 2", 1, 4.0));
+    var filmes = List.of(umFilme().agora());
 
     // acao
     var locadoraException =
@@ -78,7 +80,7 @@ public class LocacaoServiceTest {
   @Test
   public void testNaoDeveAlugarFilmeSemFilme() {
     // cenario
-    var usuario = new Usuario("Usuario 1");
+    var usuario = umUsuario().agora();
 
     // acao
     var locadoraException =
@@ -94,9 +96,9 @@ public class LocacaoServiceTest {
     var usuario = new Usuario("Usuario 1");
     var filmes =
         List.of(
-            new Filme("Filme 1", 2, 4.0),
-            new Filme("Filme 2", 2, 4.0),
-            new Filme("Filme 3", 2, 4.0));
+                umFilme().agora(),
+                umFilme().agora(),
+                umFilme().agora());
 
     // acao
     var resultado = locacaoService.alugarFilme(usuario, filmes);
@@ -108,13 +110,13 @@ public class LocacaoServiceTest {
   @Test
   public void testDevePagar50PctNoFilme4() throws FilmeSemEstoqueException, LocadoraException {
     // cenario
-    var usuario = new Usuario("Usuario 1");
+    var usuario = umUsuario().agora();
     var filmes =
         List.of(
-            new Filme("Filme 1", 2, 4.0),
-            new Filme("Filme 2", 2, 4.0),
-            new Filme("Filme 3", 2, 4.0),
-            new Filme("Filme 4", 2, 4.0));
+                umFilme().agora(),
+                umFilme().agora(),
+                umFilme().agora(),
+                umFilme().agora());
 
     // acao
     var resultado = locacaoService.alugarFilme(usuario, filmes);
@@ -126,14 +128,14 @@ public class LocacaoServiceTest {
   @Test
   public void testDevePagar75PctNoFilme5() throws FilmeSemEstoqueException, LocadoraException {
     // cenario
-    var usuario = new Usuario("Usuario 1");
+    var usuario = umUsuario().agora();
     var filmes =
         List.of(
-            new Filme("Filme 1", 2, 4.0),
-            new Filme("Filme 2", 2, 4.0),
-            new Filme("Filme 3", 2, 4.0),
-            new Filme("Filme 4", 2, 4.0),
-            new Filme("Filme 5", 2, 4.0));
+                umFilme().agora(),
+                umFilme().agora(),
+                umFilme().agora(),
+                umFilme().agora(),
+                umFilme().agora());
 
     // acao
     var resultado = locacaoService.alugarFilme(usuario, filmes);
@@ -145,15 +147,15 @@ public class LocacaoServiceTest {
   @Test
   public void testDevePagar0PctNoFilme6() throws FilmeSemEstoqueException, LocadoraException {
     // cenario
-    var usuario = new Usuario("Usuario 1");
+    var usuario = umUsuario().agora();
     var filmes =
         List.of(
-            new Filme("Filme 1", 2, 4.0),
-            new Filme("Filme 2", 2, 4.0),
-            new Filme("Filme 3", 2, 4.0),
-            new Filme("Filme 4", 2, 4.0),
-            new Filme("Filme 5", 2, 4.0),
-            new Filme("Filme 6", 2, 4.0));
+                umFilme().agora(),
+                umFilme().agora(),
+                umFilme().agora(),
+                umFilme().agora(),
+                umFilme().agora(),
+                umFilme().agora());
 
     // acao
     var resultado = locacaoService.alugarFilme(usuario, filmes);
@@ -168,8 +170,8 @@ public class LocacaoServiceTest {
     Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
     // cenario
-    var usuario = new Usuario("Usuario 1");
-    var filmes = List.of(new Filme("Filme 1", 1, 5.0));
+    var usuario = umUsuario().agora();
+    var filmes = List.of(umFilme().agora());
 
     // acao
     var resultado = locacaoService.alugarFilme(usuario, filmes);

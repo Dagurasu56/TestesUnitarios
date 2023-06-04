@@ -1,9 +1,10 @@
 package br.ce.wcaquino.servicos;
 
+import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import br.ce.wcaquino.builders.FilmeBuilder;
 import br.ce.wcaquino.entidades.Filme;
-import br.ce.wcaquino.entidades.Usuario;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
 import java.util.Arrays;
@@ -35,13 +36,13 @@ public class CalculoValorLocacaoTest {
   }
 
 
-  private static final Filme filme1 = new Filme("Filme 1", 2, 4.0);
-  private static final Filme filme2 = new Filme("Filme 2", 2, 4.0);
-  private static final Filme filme3 = new Filme("Filme 3", 2, 4.0);
-  private static final Filme filme4 = new Filme("Filme 4", 2, 4.0);
-  private static final Filme filme5 = new Filme("Filme 5", 2, 4.0);
-  private static final Filme filme6 = new Filme("Filme 6", 2, 4.0);
-  private static final Filme filme7 = new Filme("Filme 7", 2, 4.0);
+  private static final Filme filme1 = FilmeBuilder.umFilme().agora();
+  private static final Filme filme2 = FilmeBuilder.umFilme().agora();
+  private static final Filme filme3 = FilmeBuilder.umFilme().agora();
+  private static final Filme filme4 = FilmeBuilder.umFilme().agora();
+  private static final Filme filme5 = FilmeBuilder.umFilme().agora();
+  private static final Filme filme6 = FilmeBuilder.umFilme().agora();
+  private static final Filme filme7 = FilmeBuilder.umFilme().agora();
 
   @Before
   public void init() {
@@ -65,7 +66,7 @@ public class CalculoValorLocacaoTest {
   public void testCalcularValorLocacaoConsiderandoDescontos()
       throws FilmeSemEstoqueException, LocadoraException {
     // cenario
-    var usuario = new Usuario("Usuario 1");
+    var usuario = umUsuario().agora();
 
 
     // acao
