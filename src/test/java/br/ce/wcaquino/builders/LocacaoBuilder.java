@@ -16,7 +16,8 @@ public class LocacaoBuilder {
 
   private LocacaoBuilder() {}
 
-  public static void inicializarDadosPadroes(LocacaoBuilder builder) {
+  public static LocacaoBuilder umLocacao() {
+    LocacaoBuilder builder = new LocacaoBuilder();
     builder.elemento = new Locacao();
     Locacao elemento = builder.elemento;
 
@@ -25,6 +26,8 @@ public class LocacaoBuilder {
     elemento.setDataLocacao(new Date());
     elemento.setDataRetorno(DataUtils.obterDataComDiferencaDias(1));
     elemento.setValor(4.0);
+
+    return builder;
   }
 
   public LocacaoBuilder comUsuario(Usuario usuario) {

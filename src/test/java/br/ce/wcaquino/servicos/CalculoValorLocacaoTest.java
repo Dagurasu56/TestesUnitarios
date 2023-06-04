@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 
 import br.ce.wcaquino.builders.FilmeBuilder;
 import br.ce.wcaquino.daos.LocacaoDAO;
-import br.ce.wcaquino.daos.LocacaoDAOFake;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
@@ -32,15 +31,7 @@ public class CalculoValorLocacaoTest {
 
   @Parameter(value=2)
   public String cenario;
-
-  @Before
-  public void setup(){
-    service = new LocacaoService();
-    LocacaoDAO dao = mock(LocacaoDAO.class);
-    service.setLocacaoDAO(dao);
-  }
-
-
+  
   private static final Filme filme1 = FilmeBuilder.umFilme().agora();
   private static final Filme filme2 = FilmeBuilder.umFilme().agora();
   private static final Filme filme3 = FilmeBuilder.umFilme().agora();
@@ -50,10 +41,11 @@ public class CalculoValorLocacaoTest {
   private static final Filme filme7 = FilmeBuilder.umFilme().agora();
 
   @Before
-  public void init() {
-    service = new LocacaoService();
-    LocacaoDAO dao = new LocacaoDAOFake();
-    service.setLocacaoDAO(dao);
+  public void setup(){
+    LocacaoDAO dao = mock(LocacaoDAO.class);
+    SPCService spcService = mock(SPCService.class);
+    EmailService emailService = mock(EmailService.class);
+    service = new LocacaoService(dao, spcService, emailService);
   }
 
   @Parameterized.Parameters(name="{2}")
@@ -74,7 +66,6 @@ public class CalculoValorLocacaoTest {
       throws FilmeSemEstoqueException, LocadoraException {
     // cenario
     var usuario = umUsuario().agora();
-
 
     // acao
     var resultado = service.alugarFilme(usuario, filmes);
