@@ -8,7 +8,6 @@ import static br.ce.wcaquino.matchers.MatchersProprio.caiEm;
 import static br.ce.wcaquino.matchers.MatchersProprio.caiNumaSegunda;
 import static br.ce.wcaquino.matchers.MatchersProprio.ehHoje;
 import static br.ce.wcaquino.matchers.MatchersProprio.ehHojeComDiferencaDeDias;
-import static br.ce.wcaquino.utils.DataUtils.obterDataComDiferencaDias;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,8 +32,9 @@ public class LocacaoServiceTest {
   private LocacaoDAO dao;
   private SPCService spcService;
   private EmailService emailService;
+
   @Before
-  public void setup(){
+  public void setup() {
     dao = mock(LocacaoDAO.class);
     spcService = mock(SPCService.class);
     emailService = mock(EmailService.class);
@@ -66,8 +66,7 @@ public class LocacaoServiceTest {
 
     // acao
     var exception =
-        assertThrows(
-            FilmeSemEstoqueException.class, () -> service.alugarFilme(usuario, filmes));
+        assertThrows(FilmeSemEstoqueException.class, () -> service.alugarFilme(usuario, filmes));
 
     // verificacao
     assertEquals("Filme sem estoque", exception.getMessage());
@@ -103,11 +102,7 @@ public class LocacaoServiceTest {
   public void testDevePagar75PctNoFilme3() throws FilmeSemEstoqueException, LocadoraException {
     // cenario
     var usuario = new Usuario("Usuario 1");
-    var filmes =
-        List.of(
-                umFilme().agora(),
-                umFilme().agora(),
-                umFilme().agora());
+    var filmes = List.of(umFilme().agora(), umFilme().agora(), umFilme().agora());
 
     // acao
     var resultado = service.alugarFilme(usuario, filmes);
@@ -121,11 +116,7 @@ public class LocacaoServiceTest {
     // cenario
     var usuario = umUsuario().agora();
     var filmes =
-        List.of(
-                umFilme().agora(),
-                umFilme().agora(),
-                umFilme().agora(),
-                umFilme().agora());
+        List.of(umFilme().agora(), umFilme().agora(), umFilme().agora(), umFilme().agora());
 
     // acao
     var resultado = service.alugarFilme(usuario, filmes);
@@ -140,11 +131,11 @@ public class LocacaoServiceTest {
     var usuario = umUsuario().agora();
     var filmes =
         List.of(
-                umFilme().agora(),
-                umFilme().agora(),
-                umFilme().agora(),
-                umFilme().agora(),
-                umFilme().agora());
+            umFilme().agora(),
+            umFilme().agora(),
+            umFilme().agora(),
+            umFilme().agora(),
+            umFilme().agora());
 
     // acao
     var resultado = service.alugarFilme(usuario, filmes);
@@ -159,12 +150,12 @@ public class LocacaoServiceTest {
     var usuario = umUsuario().agora();
     var filmes =
         List.of(
-                umFilme().agora(),
-                umFilme().agora(),
-                umFilme().agora(),
-                umFilme().agora(),
-                umFilme().agora(),
-                umFilme().agora());
+            umFilme().agora(),
+            umFilme().agora(),
+            umFilme().agora(),
+            umFilme().agora(),
+            umFilme().agora(),
+            umFilme().agora());
 
     // acao
     var resultado = service.alugarFilme(usuario, filmes);
@@ -174,7 +165,8 @@ public class LocacaoServiceTest {
   }
 
   @Test
-  public void testDeveDevolverFilmeNaSegundaAoAlugarNoSabado() throws FilmeSemEstoqueException, LocadoraException {
+  public void testDeveDevolverFilmeNaSegundaAoAlugarNoSabado()
+      throws FilmeSemEstoqueException, LocadoraException {
 
     Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
@@ -196,20 +188,31 @@ public class LocacaoServiceTest {
     var usuario = umUsuario().agora();
     var filmes = List.of(umFilme().agora());
 
-    when(spcService.possuiNegativacao(usuario)).thenReturn(true);
+    when(spcService.possuiNegativacao(any(Usuario.class))).thenReturn(true);
 
     // acao
-    var exception = assertThrows(LocadoraException.class, () -> service.alugarFilme(usuario, filmes));
+    var exception =
+        assertThrows(LocadoraException.class, () -> service.alugarFilme(usuario, filmes));
 
     // verificacao
     assertEquals("Usuário negativado", exception.getMessage());
+
+    verify(spcService).possuiNegativacao(usuario);
   }
 
   @Test
   public void deveEnviarEmailParaLocacoesAtrasadas() {
     // cenario
     var usuario = umUsuario().agora();
-    var locacoes = List.of(umLocacao().comUsuario(usuario).comDataRetorno(obterDataComDiferencaDias(-2)).agora());
+    var usuario2 = umUsuario().comNome("Usuario em dia").agora();
+    var usuario3 = umUsuario().comNome("Outro atrasado").agora();
+
+    var locacoes =
+        List.of(
+            umLocacao().atrasado().comUsuario(usuario).agora(),
+            umLocacao().comUsuario(usuario2).agora(),
+            umLocacao().atrasado().comUsuario(usuario3).agora(),
+            umLocacao().atrasado().comUsuario(usuario3).agora());
 
     when(dao.obterLocacoesPendentes()).thenReturn(locacoes);
 
@@ -218,5 +221,9 @@ public class LocacaoServiceTest {
 
     // verificacao
     verify(emailService).notificarAtraso(usuario);
+    verify(emailService, never()).notificarAtraso(usuario2);
+    verify(emailService, atLeastOnce()).notificarAtraso(any(Usuario.class));
+    verify(emailService, times(2)).notificarAtraso(usuario3);
+    verifyNoMoreInteractions(emailService);
   }
 }
