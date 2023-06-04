@@ -7,8 +7,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import br.ce.wcaquino.builders.FilmeBuilder;
 import br.ce.wcaquino.daos.LocacaoDAO;
 import br.ce.wcaquino.entidades.Filme;
-import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
-import br.ce.wcaquino.exceptions.LocadoraException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -63,10 +61,8 @@ public class CalculoValorLocacaoTest {
     });
   }
 
-
   @Test
-  public void testCalcularValorLocacaoConsiderandoDescontos()
-      throws FilmeSemEstoqueException, LocadoraException {
+  public void testCalcularValorLocacaoConsiderandoDescontos() throws Exception {
     // cenario
     var usuario = umUsuario().agora();
 

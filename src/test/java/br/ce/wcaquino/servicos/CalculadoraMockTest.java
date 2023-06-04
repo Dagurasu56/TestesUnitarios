@@ -1,5 +1,6 @@
 package br.ce.wcaquino.servicos;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -15,6 +16,6 @@ public class CalculadoraMockTest {
 
     when(calc.soma(eq(1), anyInt())).thenReturn(5);
 
-    System.out.println(calc.soma(1,8));
+    assertEquals(5, calc.soma(1,8));
   }
 }

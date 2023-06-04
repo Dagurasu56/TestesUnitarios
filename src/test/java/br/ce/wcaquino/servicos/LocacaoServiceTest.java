@@ -42,7 +42,7 @@ public class LocacaoServiceTest {
   }
 
   @Test
-  public void testDeveAlugarFilme() throws FilmeSemEstoqueException, LocadoraException {
+  public void testDeveAlugarFilme() throws Exception {
     Assume.assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
     // cenario
@@ -99,7 +99,7 @@ public class LocacaoServiceTest {
   }
 
   @Test
-  public void testDevePagar75PctNoFilme3() throws FilmeSemEstoqueException, LocadoraException {
+  public void testDevePagar75PctNoFilme3() throws Exception {
     // cenario
     var usuario = new Usuario("Usuario 1");
     var filmes = List.of(umFilme().agora(), umFilme().agora(), umFilme().agora());
@@ -112,7 +112,7 @@ public class LocacaoServiceTest {
   }
 
   @Test
-  public void testDevePagar50PctNoFilme4() throws FilmeSemEstoqueException, LocadoraException {
+  public void testDevePagar50PctNoFilme4() throws Exception {
     // cenario
     var usuario = umUsuario().agora();
     var filmes =
@@ -126,7 +126,7 @@ public class LocacaoServiceTest {
   }
 
   @Test
-  public void testDevePagar75PctNoFilme5() throws FilmeSemEstoqueException, LocadoraException {
+  public void testDevePagar75PctNoFilme5() throws Exception {
     // cenario
     var usuario = umUsuario().agora();
     var filmes =
@@ -145,7 +145,7 @@ public class LocacaoServiceTest {
   }
 
   @Test
-  public void testDevePagar0PctNoFilme6() throws FilmeSemEstoqueException, LocadoraException {
+  public void testDevePagar0PctNoFilme6() throws Exception {
     // cenario
     var usuario = umUsuario().agora();
     var filmes =
@@ -165,8 +165,7 @@ public class LocacaoServiceTest {
   }
 
   @Test
-  public void testDeveDevolverFilmeNaSegundaAoAlugarNoSabado()
-      throws FilmeSemEstoqueException, LocadoraException {
+  public void testDeveDevolverFilmeNaSegundaAoAlugarNoSabado() throws Exception {
 
     Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
@@ -183,7 +182,7 @@ public class LocacaoServiceTest {
   }
 
   @Test
-  public void naoDevealugarFilmeParaNegativadoSPC() {
+  public void naoDevealugarFilmeParaNegativadoSPC() throws Exception {
     // cenario
     var usuario = umUsuario().agora();
     var filmes = List.of(umFilme().agora());
@@ -225,5 +224,20 @@ public class LocacaoServiceTest {
     verify(emailService, atLeastOnce()).notificarAtraso(any(Usuario.class));
     verify(emailService, times(2)).notificarAtraso(usuario3);
     verifyNoMoreInteractions(emailService);
+  }
+
+  @Test
+  public void deveTratarErroNoSPC() throws Exception {
+    // cenario
+    var usuario = umUsuario().agora();
+    var filmes = List.of(umFilme().agora());
+
+    when(spcService.possuiNegativacao(usuario)).thenThrow(new Exception("Falha catastrófica"));
+
+    // acao
+    var exception = assertThrows(LocadoraException.class, () -> service.alugarFilme(usuario, filmes));
+
+    // verificacao
+    assertEquals("Problemas com o SPC, tente novamente", exception.getMessage());
   }
 }
